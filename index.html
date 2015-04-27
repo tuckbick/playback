@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Jerry</title>
+        <meta charset="utf-8">
+        <style>
+            #cursor {
+                position: absolute;
+                top: 0;
+                left: 0;
+                transform: translate3d(0px, 0px, 0px);
+                transition: all 200ms linear;
+                height: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <img id="cursor" src="cursor.svg" />
+        <button id="toggleRecording">start</button>
+        <button id="playRecording">play</button>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>10</p>
+        <script src="jquery.min.js"></script>
+        <script src="jquery.throttle.js"></script>
+        <script>
+            var timeline = [],
+                isRecording = false,
+                recordMouseMove = $.throttle(200, function(e) {
+                    timeline.push({
+                        date: new Date(),
+                        mouseX: e.pageX,
+                        mouseY: e.pageY
+                    });
+                }),
+                recordWindowScroll = $.throttle(200, function(e) {
+                    timeline.push({
+                        date: new Date(),
+                        scrollX: window.scrollX,
+                        scrollY: window.scrollY
+                    });
+                }),
+                startRecording = function() {
+                    if (isRecording || isPlaying) return;
+                    isRecording = true;
+                    timeline = [];
+                    $('#toggleRecording').text('stop');
+                    $(window)
+                        .on('mousemove', recordMouseMove)
+                        .on('scroll', recordWindowScroll);
+                },
+                stopRecording = function() {
+                    if (!isRecording) return;
+                    isRecording = false;
+                    $('#toggleRecording').text('start');
+                    $(window)
+                        .off('mousemove', recordMouseMove)
+                        .off('scroll', recordWindowScroll);
+                };
+
+            var $cursor = $('#cursor'),
+                setCursor = function(x, y) {
+                    $cursor.css('transform', 'translate3d('+x+'px, '+y+'px, 0px)');
+                };
+
+            var setWindow = function(x, y) {
+                    window.scroll(x, y);
+                };
+
+            var idx,
+                isPlaying = false,
+                playFrame = function(idx) {
+                    var frame = timeline[idx],
+                        nextFrame;
+
+                    if (isPlaying && idx + 1 < timeline.length) {
+                        nextFrame = timeline[idx + 1];
+
+                        if (frame.hasOwnProperty('mouseX')) {
+                            setCursor(frame.mouseX, frame.mouseY);
+                        }
+
+                        else if (frame.hasOwnProperty('scrollX')) {
+                            setWindow(frame.scrollX, frame.scrollY);
+                        }
+
+                        setTimeout(function() {
+                            playFrame(idx + 1);
+                        }, nextFrame.date - frame.date);
+                    }
+
+                    else {
+                        stopPlaying();
+                    }
+                },
+                startPlaying = function() {
+                    if (isPlaying) return;
+                    isPlaying = true;
+                    $('#playRecording').text('stop');
+                    playFrame(0);
+                },
+                stopPlaying = function() {
+                    if (!isPlaying) return;
+                    isPlaying = false;
+                    $('#playRecording').text('play');
+                };
+
+            $('#toggleRecording').on('click', function() {
+                if (isPlaying) return;
+                isRecording ? stopRecording() : startRecording();
+            });
+
+            $('#playRecording').on('click', function() {
+                if (isRecording) return;
+                isPlaying ? stopPlaying() : startPlaying();
+            });
+
+        </script>
+    </body>
+</html>
