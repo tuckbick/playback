@@ -9,7 +9,7 @@
                 top: 0;
                 left: 0;
                 transform: translate3d(0px, 0px, 0px);
-                transition: all 200ms linear;
+                transition: all 100ms linear;
                 height: 30px;
             }
         </style>
@@ -183,14 +183,14 @@
         <script>
             var timeline = [],
                 isRecording = false,
-                recordMouseMove = $.throttle(200, function(e) {
+                recordMouseMove = $.throttle(100, function(e) {
                     timeline.push({
                         date: new Date(),
                         mouseX: e.pageX,
                         mouseY: e.pageY
                     });
                 }),
-                recordWindowScroll = $.throttle(200, function(e) {
+                recordWindowScroll = $.throttle(100, function(e) {
                     timeline.push({
                         date: new Date(),
                         scrollX: window.scrollX,
@@ -226,6 +226,9 @@
 
             var idx,
                 isPlaying = false,
+                frame,
+                nextFrame,
+                playTimeout,
                 playFrame = function(idx) {
                     var frame = timeline[idx],
                         nextFrame;
@@ -241,7 +244,7 @@
                             setWindow(frame.scrollX, frame.scrollY);
                         }
 
-                        setTimeout(function() {
+                        playTimeout = setTimeout(function() {
                             playFrame(idx + 1);
                         }, nextFrame.date - frame.date);
                     }
@@ -259,6 +262,7 @@
                 stopPlaying = function() {
                     if (!isPlaying) return;
                     isPlaying = false;
+                    clearTimeout(playTimeout);
                     $('#playRecording').text('play');
                 };
 
